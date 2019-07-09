@@ -1,10 +1,10 @@
 const Post = require("../data/db");
 
-const respondSuccess = (statusCode, data, message = null, res) => {
+const respondSuccess = (statusCode, data = null, message = null, res) => {
   return res.status(statusCode).json({
     status: "success",
     ...(message && { message }),
-    data
+    ...(data && {  data }),
   });
 };
 const respondError = (statusCode, error = null, message = null, res) => {
@@ -113,9 +113,29 @@ const getSinglePost = async (req, res) => {
   }
 }
 
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params
+    const post = await Post.findById(id)
+    if(post.length) {
+      const deleted = await Post.remove(id)
+      if (deleted) {
+        respondSuccess(200, null, 'Post deleted successfully',res)
+      } else {
+        respondError(500, null, 'Could not delete the Post from the database', res)
+      }
+    } else {
+      respondError(404, null, "The post with the specified ID does not exist", res);
+    }
+  } catch (error) {
+    respondError(500, error, 'Could not delete the Post from the database', res)
+  }
+}
+
 module.exports = {
   createPost,
   createPostComment,
   getAllPosts,
-  getSinglePost
+  getSinglePost,
+  deletePost
 };
