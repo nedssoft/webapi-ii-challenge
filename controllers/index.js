@@ -86,7 +86,21 @@ const createPostComment = async (req, res) => {
   }
 };
 
+const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find();
+    if(posts.length) {
+      respondSuccess(200, posts,'',res )
+    } else {
+      respondError(400, null, 'No posts found in the database', res);
+    }
+  } catch (error) {
+    respondError(400, error, 'There was an error retrieving posts from the database', res);
+  }
+}
+
 module.exports = {
   createPost,
-  createPostComment
+  createPostComment,
+  getAllPosts
 };
