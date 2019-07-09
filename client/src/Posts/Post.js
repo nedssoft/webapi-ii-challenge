@@ -1,8 +1,8 @@
 import React from "react";
 import styled, {keyframes} from "styled-components";
 import { Link } from "react-router-dom";
-import { FaEdit,FaRegTrashAlt } from "react-icons/fa";
-
+import { FaEdit,FaRegTrashAlt, FaEye } from "react-icons/fa";
+import Comments from './Comments'
 const moveBtn = keyframes`
   from {
     margin-left: 20px;
@@ -13,7 +13,7 @@ const moveBtn = keyframes`
   }
 `
 const PostWrapper = styled.div`
-  width: 300px;
+  width: 400px;
   padding: 0.8rem;
   text-align: center;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(204, 204, 204, 1);
@@ -53,7 +53,14 @@ const DeleteBtn = styled(FaRegTrashAlt)`
     animation: ${moveBtn} 0.2s;
   }
 `
-export default function Post({ post, deletePost }) {
+const ViewBtn = styled(FaEye)`
+  color: green;
+  cursor: pointer;
+  &:hover {
+    animation: ${moveBtn} 0.2s;
+  }
+`
+export default function Post({ post, deletePost, showComments, toggleComments, comments }) {
   return (
     <PostWrapper>
       <TextWrapper>
@@ -66,8 +73,10 @@ export default function Post({ post, deletePost }) {
       </TextWrapper>
       <ControlButtons>
         <Link to={`posts/${post.id}/edit`}><EditBtn /></Link>
-        <DeleteBtn onClick={() => deletePost(post.id)}>Delete</DeleteBtn>
+        <DeleteBtn onClick={() => deletePost(post.id)}>Delete</DeleteBtn>        
       </ControlButtons>
+      <ViewBtn onClick={() => toggleComments(post.id)}>View Comments</ViewBtn>
+      { showComments && <Comments comments={comments} />}
     </PostWrapper>
   );
 }

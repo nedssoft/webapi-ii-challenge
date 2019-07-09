@@ -5,10 +5,10 @@ import axios from 'axios'
 
 const BASE_URL = 'http://localhost:8000/api/posts/'
 const PostsContainer = styled.section`
-  width: 800px;
+  width: 820px;
   height: 100%;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   margin: auto;
   flex-direction: column;
   @media (max-width: 500px) {
@@ -25,7 +25,9 @@ const PostsWrapper = styled.div`
 `;
 class Posts extends React.Component {
   state = {
-    posts: []
+    posts: [],
+    comments: [],
+    showComments: false,
   }
   componentDidMount() {
     this.getPosts()
@@ -47,6 +49,14 @@ class Posts extends React.Component {
       }
     })
   }
+  toggleComments = (id) => {
+    axios.get(`${BASE_URL}/${id}/comments`).then(res => {
+      console.log(res.data)
+      this.setState({comments : res.data.data, showComments: true})
+    }).catch(err => {
+      console.log(err)
+    })
+  }
   render() {
     return (
       <React.Fragment>
@@ -58,6 +68,9 @@ class Posts extends React.Component {
                 key={post.id}
                 post={post}
                 deletePost={this.deletePost}
+                showComments={this.state.showComments}
+                comments={this.state.comments}
+                toggleComments={this.toggleComments}
               />
             ))}
         </PostsWrapper>
