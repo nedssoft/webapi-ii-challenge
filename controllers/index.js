@@ -4,7 +4,7 @@ const respondSuccess = (statusCode, data = null, message = null, res) => {
   return res.status(statusCode).json({
     status: "success",
     ...(message && { message }),
-    ...(data && {  data }),
+    ...(data && { data })
   });
 };
 const respondError = (statusCode, error = null, message = null, res) => {
@@ -60,7 +60,12 @@ const createPostComment = async (req, res) => {
     } else {
       const post = await Post.findById(id);
       if (!post.length) {
-        respondError(404, null, "The post with the specified ID does not exist", res);
+        respondError(
+          404,
+          null,
+          "The post with the specified ID does not exist",
+          res
+        );
       } else {
         const comment = await Post.insertComment({ text, post_id: id });
         if (comment) {
@@ -75,7 +80,6 @@ const createPostComment = async (req, res) => {
         }
       }
     }
-   
   } catch (error) {
     respondError(
       500,
@@ -89,53 +93,118 @@ const createPostComment = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find();
-    if(posts.length) {
-      respondSuccess(200, posts,'',res )
+    if (posts.length) {
+      respondSuccess(200, posts, "", res);
     } else {
-      respondError(400, null, 'No posts found in the database', res);
+      respondError(400, null, "No posts found in the database", res);
     }
   } catch (error) {
-    respondError(400, error, 'There was an error retrieving posts from the database', res);
+    respondError(
+      400,
+      error,
+      "There was an error retrieving posts from the database",
+      res
+    );
   }
-}
+};
 
 const getSinglePost = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const post = await Post.findById(id);
-    if(post.length) {
-      respondSuccess(200, post, 'Success', res)
+    if (post.length) {
+      respondSuccess(200, post, "Success", res);
     } else {
-      respondError(404, null, 'The post with the specified ID does not exist.', res)
+      respondError(
+        404,
+        null,
+        "The post with the specified ID does not exist.",
+        res
+      );
     }
   } catch (error) {
-    respondError(500, error, 'The post information could not be retrieved.', res)
+    respondError(
+      500,
+      error,
+      "The post information could not be retrieved.",
+      res
+    );
   }
-}
+};
 
 const deletePost = async (req, res) => {
   try {
-    const { id } = req.params
-    const post = await Post.findById(id)
-    if(post.length) {
-      const deleted = await Post.remove(id)
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    if (post.length) {
+      const deleted = await Post.remove(id);
       if (deleted) {
-        respondSuccess(200, null, 'Post deleted successfully',res)
+        respondSuccess(200, null, "Post deleted successfully", res);
       } else {
-        respondError(500, null, 'Could not delete the Post from the database', res)
+        respondError(
+          500,
+          null,
+          "Could not delete the Post from the database",
+          res
+        );
       }
     } else {
-      respondError(404, null, "The post with the specified ID does not exist", res);
+      respondError(
+        404,
+        null,
+        "The post with the specified ID does not exist",
+        res
+      );
     }
   } catch (error) {
-    respondError(500, error, 'Could not delete the Post from the database', res)
+    respondError(
+      500,
+      error,
+      "Could not delete the Post from the database",
+      res
+    );
   }
-}
+};
+
+const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, contents } = req.body;
+    if (!title || !contents) {
+      respondError(
+        400,
+        null,
+        "Please provide title and contents for the post.",
+        res
+      );
+    } else {
+      const post = await Post.findById(id);
+      if (post.length) {
+        const updatedPost = await Post.update(id, { title, contents });
+        if (updatedPost) {
+          respondSuccess(200, updatedPost, "Post updated successfully", res);
+        } else {
+          respondError(500, null, "The post information could not be modified.", res);
+        }
+      } else {
+        respondError(
+          404,
+          null,
+          "The post with the specified ID does not exist",
+          res
+        );
+      }
+    }
+  } catch (error) {
+    respondError(500, null, "The post information could not be modified.", res);
+  }
+};
 
 module.exports = {
   createPost,
   createPostComment,
   getAllPosts,
   getSinglePost,
-  deletePost
+  deletePost,
+  updatePost
 };
