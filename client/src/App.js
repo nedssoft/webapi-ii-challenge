@@ -1,7 +1,7 @@
-import React from 'react'
-import {NavLink } from 'react-router-dom'
-import styled from 'styled-components'
-
+import React from "react";
+import { NavLink } from "react-router-dom";
+import styled from "styled-components";
+import GlobalStyle from "./styled/GlobalStyles";
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -18,27 +18,33 @@ const HeaderWrapper = styled.header`
       justify-content: space-between;
     }
   }
-`
+`;
 const Nav = styled(NavLink)`
   padding: 0 3rem;
   color: white;
   font-size: 2rem;
   text-decoration: none;
   @media (max-width: 500px) {
-      font-size: 1.5rem;
-      padding: 0 0.8rem;
+    font-size: 1.5rem;
+    padding: 0 0.8rem;
   }
-  &.active, &:hover {
+  &.active,
+  &:hover {
     text-decoration: underline;
   }
-`
-export default function header(){
+`;
+export default function header() {
   return (
-    <HeaderWrapper>
-      <nav>
-        <Nav exact to="/">Posts</Nav>
-        <Nav to="/posts/add">Add New</Nav>
-      </nav>
-    </HeaderWrapper>
-  )
+    <React.Fragment>
+      <GlobalStyle />
+      <HeaderWrapper>
+        <nav>
+          <Nav exact to="/">
+            Posts
+          </Nav>
+          <Nav to="/posts/add">Add New</Nav>
+        </nav>
+      </HeaderWrapper>
+    </React.Fragment>
+  );
 }
