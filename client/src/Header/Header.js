@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import GlobalStyle from "./styled/GlobalStyles";
+
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -36,7 +36,6 @@ const Nav = styled(NavLink)`
 export default function header() {
   return (
     <React.Fragment>
-      <GlobalStyle />
       <HeaderWrapper>
         <nav>
           <Nav exact to="/">

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Post from "./Post";
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8000/api/posts'
+const BASE_URL = 'http://localhost:8000/api/posts/'
 const PostsContainer = styled.section`
   width: 800px;
   height: 100%;
@@ -28,14 +28,23 @@ class Posts extends React.Component {
     posts: []
   }
   componentDidMount() {
-    this.getUsers()
+    this.getPosts()
   }
   getPosts = () => {
     axios.get(BASE_URL).then(res => {
-      console.log(res.data)
-      this.setState({posts : res.data})
+
+      this.setState({posts : res.data.data})
     }).catch(err => {
       console.log(err)
+    })
+  }
+  deletePost = (id) => {
+    axios.delete(`${BASE_URL}/${id}`)
+    .then(({data}) => {
+      if (data.status === 'success') {
+        alert('User deleted successfully')
+        this.getPosts()
+      }
     })
   }
   render() {
