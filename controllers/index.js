@@ -99,8 +99,23 @@ const getAllPosts = async (req, res) => {
   }
 }
 
+const getSinglePost = async (req, res) => {
+  try {
+    const { id } = req.params
+    const post = await Post.findById(id);
+    if(post.length) {
+      respondSuccess(200, post, 'Success', res)
+    } else {
+      respondError(404, null, 'The post with the specified ID does not exist.', res)
+    }
+  } catch (error) {
+    respondError(500, error, 'The post information could not be retrieved.', res)
+  }
+}
+
 module.exports = {
   createPost,
   createPostComment,
-  getAllPosts
+  getAllPosts,
+  getSinglePost
 };
